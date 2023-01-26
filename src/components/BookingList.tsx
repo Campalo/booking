@@ -1,4 +1,4 @@
-import { BookingType } from "../page/App";
+import { BookingType } from "../utils/useBookings";
 
 interface Props {
   bookings: BookingType[];

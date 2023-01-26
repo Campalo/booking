@@ -1,4 +1,4 @@
-import { ResourceType } from '../page/App';
+import { ResourceType } from '../utils/useResource';
 import "./Resource.scss";
 
 interface Props {
