@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import * as api from "../api/api";
-import { useAuth } from "./useAuth";
-import { BookingType, useBookings } from "./useBookings";
+import { useAuth } from "./auth";
 
 export interface ResourceType {
   id: string;
@@ -9,32 +8,30 @@ export interface ResourceType {
   bookingDurationStep: number;
   maximumBookingDuration: number;
   minimumBookingDuration: number;
-  bookingInfo?: BookingType;
 }
 
 export const useResource = () => {
+  const {auth, reset} = useAuth();
   const [resource, setResource] = useState<ResourceType>();
   const [error, setError] = useState("");
-  const { auth, isLoggedIn} = useAuth();
-  const { bookings } = useBookings();
 
-  useEffect(() => {
-    if(isLoggedIn) {
-      api.getResource(auth.token)
+  useEffect(()=> {
+    if (!auth) {
+      throw new Error("You should not pass!")
+    };
+
+    api.getResource(auth.token)
       .then(result => {
         setResource(result.data);
       })
-      .catch(error => setError(error.toString()))
-    }
-  }, [isLoggedIn, auth]);
-
-  useEffect(() => {
-    if (!!resource) {
-      const bookingInfo =  bookings.find((booking) => booking.id === resource.id);
-      setResource({...resource, bookingInfo});
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookings]);
+      .catch(error => {
+        if (error === "You must be logged in to access this") {
+          reset();
+        } else {
+          setError(error.toString())
+        }
+      })
+    }, []);
 
   return {resource, resourceError: error};
 }

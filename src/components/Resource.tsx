@@ -1,38 +1,41 @@
 import { format, isWithinInterval } from "date-fns";
-import { useEffect, useState } from "react";
+import { BookingType } from "../utils/useBookings";
 import { ResourceType } from "../utils/useResource";
 import "./Resource.scss";
 
 interface Props {
-  resource: ResourceType | undefined;
+  resource: ResourceType;
+  bookings: BookingType[];
 }
 
-const Resource = ({ resource }: Props) => {
-  const [isBookedNow, setIsBookedNow] = useState(false);
+const isBookedNow = (booking?: BookingType):booking is BookingType => {
+  if (!booking) return false;
+  const interval = {
+    start: booking.start,
+    end: booking.end
+  };
+  return isWithinInterval(new Date(), interval);
+}
 
-  useEffect(() => {
-    if (!!resource?.bookingInfo) {
-      const interval = {start: new Date(resource?.bookingInfo?.start), end: new Date(resource?.bookingInfo?.end)}
-      setIsBookedNow(!!interval && isWithinInterval(new Date(resource?.bookingInfo?.start), interval));
-    }
-  }, [resource?.bookingInfo])
+const Resource = ({ resource, bookings }: Props) => {
+  const booking = bookings.find((booking) => booking.id === resource?.id);
 
   return (
     <header>
-      <h1>{resource?.name}</h1>
+      <h1>{resource.name}</h1>
       <div>
-        {isBookedNow && resource?.bookingInfo? (
+        {isBookedNow(booking) ? (
           <>
             <h2>Booked</h2>
-            <p>By {resource?.bookingInfo?.userId}</p>
-            <p>From {format(new Date(resource?.bookingInfo?.start), "p")} to {format(new Date(resource?.bookingInfo?.end), "p")}</p>
+            <p>By {booking.userId}</p>
+            <p>From {format(booking.start, "p")} to {format(booking.end, "p")}</p>
           </>
         ) : (
           <>
-            <h2>Free</h2>
+            <h2>Available</h2>
             <button onClick={() => console.log("TODO: Book")}>Book now</button>
             <p>
-              Booking range: from {resource?.minimumBookingDuration} min to {resource?.maximumBookingDuration} min.
+              Booking range: from {resource.minimumBookingDuration} min to {resource.maximumBookingDuration} min.
             </p>
           </>
         )}
