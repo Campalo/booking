@@ -10,6 +10,16 @@ export interface BookingType {
   userId: string;
 }
 
+const formatBookings = (bookings: any[]): BookingType[] => {
+  return bookings.map((booking) => {
+   return {
+      ...booking,
+      start: new Date(booking.start),
+      end: new Date(booking.end),
+    }
+  })
+}
+
 export const useBookings = () => {
   const { auth, reset } = useAuth();
   const [bookings, setBookings] = useState<BookingType[]>([]);
@@ -23,7 +33,7 @@ export const useBookings = () => {
     api
       .getBookings(auth.token)
       .then((result) => {
-        setBookings(result.data);
+        setBookings(formatBookings(result.data));
       })
       .catch((error) => {
         if (error === "You must be logged in to access this") {
