@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "./auth";
+import { AuthType, useAuth } from "./auth";
 import * as api from "../api/api";
 
 export interface BookingType {
@@ -8,6 +8,11 @@ export interface BookingType {
   end: Date;
   name: string;
   userId: string;
+}
+
+export interface BookingData {
+  name: string,
+  duration: number,
 }
 
 const formatBookings = (bookings: any[]): BookingType[] => {
@@ -25,13 +30,12 @@ export const useBookings = () => {
   const [bookings, setBookings] = useState<BookingType[]>([]);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  const getBookings = (auth: AuthType) => {
     if (!auth) {
       throw new Error("You should not pass!");
     }
 
-    api
-      .getBookings(auth.token)
+    api.getBookings(auth.token)
       .then((result) => {
         setBookings(formatBookings(result.data));
       })
@@ -42,7 +46,22 @@ export const useBookings = () => {
           setError(error.toString());
         }
       });
+  }
+
+  const book = (data : BookingData) => {
+    if (!auth) {
+      throw new Error("You should not pass!");
+    }
+    api.postBookings(auth?.token, data)
+      .then(() => getBookings(auth));
+  }
+
+  useEffect(() => {
+    if (!auth) {
+      throw new Error("You should not pass!");
+    }
+    getBookings(auth);
   }, []);
 
-  return { bookings, bookingsError: error };
+  return { bookings, bookingsError: error, book };
 };

@@ -1,39 +1,32 @@
-import { format, isWithinInterval } from "date-fns";
-import { BookingType } from "../utils/useBookings";
+import { format } from "date-fns";
+import { BookingData, BookingType } from "../utils/useBookings";
 import { ResourceType } from "../utils/useResource";
+import { getMaxEnd } from "../utils/utils";
 import "./Resource.scss";
 
 interface Props {
   resource: ResourceType;
   bookings: BookingType[];
+  book: (data: BookingData) => void;
 }
 
-const isBookedNow = (booking?: BookingType):booking is BookingType => {
-  if (!booking) return false;
-  const interval = {
-    start: booking.start,
-    end: booking.end
-  };
-  return isWithinInterval(new Date(), interval);
-}
-
-const Resource = ({ resource, bookings }: Props) => {
-  const booking = bookings.find((booking) => booking.id === resource?.id);
+const Resource = ({ resource, bookings, book }: Props) => {
+  const isBookedNow = getMaxEnd(new Date(), bookings, resource) === undefined;
 
   return (
     <header>
       <h1>{resource.name}</h1>
       <div>
-        {isBookedNow(booking) ? (
+        {isBookedNow ? (
           <>
             <h2>Booked</h2>
-            <p>By {booking.userId}</p>
-            <p>From {format(booking.start, "p")} to {format(booking.end, "p")}</p>
+            {/* <p>By {booking.userId}</p>
+            <p>From {format(booking.start, "p")} to {format(booking.end, "p")}</p> */}
           </>
         ) : (
           <>
             <h2>Available</h2>
-            <button onClick={() => console.log("TODO: Book")}>Book now</button>
+            <button onClick={() => book({ name: "NEW BOOKING", duration: 10})}>Book now</button>
             <p>
               Booking range: from {resource.minimumBookingDuration} min to {resource.maximumBookingDuration} min.
             </p>

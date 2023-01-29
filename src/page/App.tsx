@@ -8,7 +8,7 @@ import { useAuth } from "../utils/auth";
 
 const Page = () => {
   const { resource, resourceError } = useResource();
-  const { bookings, bookingsError } = useBookings();
+  const { bookings, bookingsError, book } = useBookings();
   const error = resourceError || bookingsError;
 
   if (error) return <p>{error}</p>;
@@ -16,7 +16,7 @@ const Page = () => {
 
   return (
     <>
-      <Resource resource={resource} bookings={bookings} />
+      <Resource resource={resource} bookings={bookings} book={book} />
       <BookingList bookings={bookings} />
     </>
   );

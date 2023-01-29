@@ -1,4 +1,5 @@
 import { BASE_API_URL } from "../utils/constants";
+import { BookingData } from "../utils/useBookings";
 
 const bearerToken =  (token: string) => "Bearer " + token;
 
@@ -49,3 +50,19 @@ export const getBookings = async (token: string) => {
   if (!response.ok) throw new Error ("No booking was found")
   return response.json();
 };
+
+export const postBookings = async (token: string, data: BookingData) => {
+  const response = await fetch(
+    `${BASE_API_URL}/bookings`,
+    {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        "Authorization": bearerToken(token),
+      },
+      body: JSON.stringify(data),
+    }
+  )
+
+  return response.json();
+}
