@@ -13,7 +13,6 @@ export interface ResourceType {
 export const useResource = () => {
   const {auth, reset} = useAuth();
   const [resource, setResource] = useState<ResourceType>();
-  const [error, setError] = useState("");
 
   useEffect(()=> {
     if (!auth) {
@@ -25,13 +24,10 @@ export const useResource = () => {
         setResource(result.data);
       })
       .catch(error => {
-        if (error === "You must be logged in to access this") {
-          reset();
-        } else {
-          setError(error.toString())
-        }
+        console.error(error);
+        reset();
       })
     }, []);
 
-  return {resource, resourceError: error};
+  return {resource};
 }

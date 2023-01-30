@@ -19,8 +19,6 @@ export const login = async () => {
       },
     }
   );
-
-  if (!response.ok) throw new Error ("The user authentication failed")
   return response.json();
 };
 
@@ -34,7 +32,7 @@ export const getResource = async (token: string) => {
     }
   );
 
-  if (!response.ok) throw new Error ("No resource was found")
+  if (response.status === 401) throw new Error("Unauthorized")
   return response.json();
 };
 
@@ -47,7 +45,7 @@ export const getBookings = async (token: string) => {
     }
   );
 
-  if (!response.ok) throw new Error ("No booking was found")
+  if (response.status === 401) throw new Error("Unauthorized")
   return response.json();
 };
 
@@ -60,6 +58,5 @@ export const postBookings = async (token: string, data: BookingData) => {
       body: JSON.stringify(data),
     }
   )
-
   return response.json();
 }

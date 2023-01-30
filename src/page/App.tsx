@@ -7,11 +7,9 @@ import { useBookings } from "../utils/useBookings";
 import { useAuth } from "../utils/auth";
 
 const Page = () => {
-  const { resource, resourceError } = useResource();
-  const { bookings, bookingsError, book } = useBookings();
-  const error = resourceError || bookingsError;
+  const { resource } = useResource();
+  const { bookings, book } = useBookings();
 
-  if (error) return <p>{error}</p>;
   if (!resource || !bookings) return <p>Loading...</p>;
 
   return (
