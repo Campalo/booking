@@ -1,11 +1,17 @@
 import { BASE_API_URL } from "../utils/constants";
 import { BookingData } from "../utils/useBookings";
 
-const bearerToken =  (token: string) => "Bearer " + token;
+const url = (path: string) => `${BASE_API_URL}/${path}`;
+const headers = (token: string) => {
+  return {
+    "Content-type": "application/json",
+    "Authorization": "Bearer " + token,
+  }
+};
 
 export const login = async () => {
   const response = await fetch(
-  `${BASE_API_URL}/login`,
+  url("login"),
     {
       method: "GET",
       headers: {
@@ -21,13 +27,10 @@ export const login = async () => {
 
 export const getResource = async (token: string) => {
   const response = await fetch(
-    `${BASE_API_URL}/resource`,
+    url("resource"),
     {
       method:"GET",
-      headers: {
-        "Content-type": "application/json",
-        "Authorization": bearerToken(token),
-     },
+      headers: headers(token)
     }
   );
 
@@ -37,13 +40,10 @@ export const getResource = async (token: string) => {
 
 export const getBookings = async (token: string) => {
   const response = await fetch(
-    `${BASE_API_URL}/bookings`,
+    url("bookings"),
     {
       method: "GET",
-      headers: {
-        "Content-type": "application/json",
-        "Authorization": bearerToken(token),
-      }
+      headers: headers(token)
     }
   );
 
@@ -53,13 +53,10 @@ export const getBookings = async (token: string) => {
 
 export const postBookings = async (token: string, data: BookingData) => {
   const response = await fetch(
-    `${BASE_API_URL}/bookings`,
+    url("bookings"),
     {
       method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        "Authorization": bearerToken(token),
-      },
+      headers: headers(token),
       body: JSON.stringify(data),
     }
   )
