@@ -60,3 +60,16 @@ export const postBookings = async (token: string, data: BookingData) => {
   )
   return response.json();
 }
+
+export const getUserById = async (token: string, id: string) => {
+  const response = await fetch (
+    url(`users/${id}`),
+    {
+      method: "GET",
+      headers: headers(token)
+    }
+  );
+
+  if (response.status === 401) throw new Error("Unauthorized")
+  return response.json();
+}

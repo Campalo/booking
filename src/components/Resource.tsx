@@ -1,4 +1,7 @@
 import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { getUserById } from "../api/api";
+import { useAuth } from "../utils/auth";
 import { BookingData, BookingType } from "../utils/useBookings";
 import { ResourceType } from "../utils/useResource";
 import { getCurrentBooking, getMaxEnd } from "../utils/utils";
@@ -10,9 +13,24 @@ interface Props {
   book: (data: BookingData) => void;
 }
 
+interface User {
+  id: string;
+  name: string;
+}
+
 const Resource = ({ resource, bookings, book }: Props) => {
+  const { auth } = useAuth();
   const isBookedNow = getMaxEnd(new Date(), bookings, resource) === undefined;
   const currentBooking = getCurrentBooking(new Date(), bookings);
+  const [bookingUser, setBookingUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    if (auth && currentBooking) {
+      getUserById(auth.token, currentBooking.userId)
+        .then(result => setBookingUser(result.data))
+        .catch(error => console.log(error))
+    }
+  }, [auth, currentBooking])
 
   return (
     <header>
@@ -23,7 +41,7 @@ const Resource = ({ resource, bookings, book }: Props) => {
             <h2>Booked</h2>
             {!!currentBooking ? (
               <>
-                <p>By {currentBooking.userId}</p>
+                <p>By {bookingUser && bookingUser.name}</p>
                 <p>From <time>{format(currentBooking.start, "p")}</time> to <time>{format(currentBooking.end, "p")}</time></p>
               </>
             ) : (
