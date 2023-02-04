@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { BookingData, BookingType } from "../utils/useBookings";
 import { ResourceType } from "../utils/useResource";
-import { getMaxEnd } from "../utils/utils";
+import { getCurrentBooking, getMaxEnd } from "../utils/utils";
 import "./Resource.scss";
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 
 const Resource = ({ resource, bookings, book }: Props) => {
   const isBookedNow = getMaxEnd(new Date(), bookings, resource) === undefined;
+  const currentBooking = getCurrentBooking(new Date(), bookings);
 
   return (
     <header>
@@ -20,8 +21,14 @@ const Resource = ({ resource, bookings, book }: Props) => {
         {isBookedNow ? (
           <>
             <h2>Booked</h2>
-            {/* <p>By {booking.userId}</p>
-            <p>From {format(booking.start, "p")} to {format(booking.end, "p")}</p> */}
+            {!!currentBooking ? (
+              <>
+                <p>By {currentBooking.userId}</p>
+                <p>From <time>{format(currentBooking.start, "p")}</time> to <time>{format(currentBooking.end, "p")}</time></p>
+              </>
+            ) : (
+              <p>The next booking starts in less than {resource.minimumBookingDuration}min</p>
+            )}
           </>
         ) : (
           <>

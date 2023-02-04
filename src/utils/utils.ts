@@ -2,12 +2,29 @@ import { add, differenceInMinutes } from "date-fns";
 import { BookingType } from "./useBookings";
 import { ResourceType } from "./useResource";
 
-export  const getMaxEnd = (start: Date, bookings: BookingType[], resource: ResourceType) => {
-  const orderedBookings: BookingType[] = bookings.sort((a, b ) => {
+// Sort bookings from start to end of day
+export const orderBookings = (bookings: BookingType[]) => {
+  return bookings.sort((a, b ) => {
     return a.start.getTime() - b.start.getTime();
   })
+};
 
+export const getCurrentBooking = (start: Date, bookings: BookingType[]) => {
+  const orderedBookings = orderBookings(bookings);
+  let currentBooking: BookingType | undefined;
+
+  for (const booking of orderedBookings) {
+    if (booking.end > start && start > booking.start) {
+      currentBooking = booking;
+      break;
+    };
+  }
+  return currentBooking;
+}
+
+export const getMaxEnd = (start: Date, bookings: BookingType[], resource: ResourceType) => {
   let nextBooking: BookingType | undefined;
+  const orderedBookings = orderBookings(bookings);
 
   for (const booking of orderedBookings) {
     const isBookingBeforeStart = start > booking.end;
@@ -20,8 +37,7 @@ export  const getMaxEnd = (start: Date, bookings: BookingType[], resource: Resou
     nextBooking = booking;
     break;
   }
-
-  if (!nextBooking) return resource.maximumBookingDuration; // next time span is free, no booking;
+  if (!nextBooking) return resource.maximumBookingDuration; // next time span is free, no booking found
 
   const minEnd = add(start, {minutes: resource.minimumBookingDuration});
   const isNextBookingAllowed = minEnd < nextBooking.start;

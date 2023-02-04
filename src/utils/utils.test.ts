@@ -1,6 +1,7 @@
+import { isEqual } from "date-fns";
 import { BookingType } from "./useBookings";
 import { ResourceType } from "./useResource";
-import { getMaxEnd } from "./utils";
+import { getCurrentBooking, getMaxEnd, orderBookings } from "./utils";
 
 const getDate = (h: number, m: number) => new Date(2022, 29, 1, h, m, 0);
 
@@ -30,7 +31,7 @@ const bookings : BookingType[]=  [
   {
     "id": "2kruRVDnnyxoU2hBOGSaZ",
     "start": getDate(20, 0),
-    "end": getDate(21, 30),
+    "end": getDate(20, 45),
     "name": "Meeting with HR",
     "userId": "fRbY66_5Y7zkPdrjRGzyL"
   },
@@ -66,5 +67,52 @@ describe("getMaxEnd", () => {
       const end = getMaxEnd(getDate(19, 30), bookings, resource);
       expect(end).toBe(30);
     })
+  })
+})
+
+describe("getCurrentBooking", () => {
+    describe("when the resource is booked now", () => {
+      it("should return the booking", () => {
+        const currentBooking = getCurrentBooking(getDate(21, 30), bookings);
+        const expectedBooking = bookings.find((booking) => {
+          return isEqual(booking.start, getDate(21, 10))
+        });
+        expect(currentBooking).toBe(expectedBooking);
+      })
+    })
+    describe("when the resource is not booked now", () => {
+      it("should return undefined", () => {
+        const currentBooking = getCurrentBooking(getDate(16, 30), bookings);
+        expect(currentBooking).toBeUndefined();
+      })
+    })
+})
+
+describe("orderBookings", () => {
+  it("should return ordered bookings", () => {
+    const expectedOrderedBooking: BookingType[]=  [
+      {
+        "id": "FUCN3hdPslM81xW-sJDmO",
+        "start": getDate(6, 30),
+        "end": getDate(6, 45),
+        "name": "Diffusion DC Comics",
+        "userId": "y8Lc5mzU4KkXIh_bmtfcX"
+      },
+      {
+        "id": "2kruRVDnnyxoU2hBOGSaZ",
+        "start": getDate(20, 0),
+        "end": getDate(20, 45),
+        "name": "Meeting with HR",
+        "userId": "fRbY66_5Y7zkPdrjRGzyL"
+      },
+      {
+        "id": "0hsjRVDnnyxoU2hBOGSaZ",
+        "start": getDate(21, 10),
+        "end": getDate(21, 50),
+        "name": "Pot de départ",
+        "userId": "fRbY66_5Y7zkPdrjRGzyL"
+      },
+    ];
+    expect(orderBookings(bookings)).toStrictEqual(expectedOrderedBooking);
   })
 })
