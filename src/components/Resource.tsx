@@ -1,16 +1,22 @@
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { getUserById } from "../api/api";
-import { useAuth } from "../utils/auth";
-import { BookingData, BookingType } from "../utils/useBookings";
-import { ResourceType } from "../utils/useResource";
-import { getCurrentBooking, getMaxEnd } from "../utils/utils";
+import { useApi } from "../utils/useApi";
+import { formatBookings, getCurrentBooking, getMaxEnd } from "../utils/utils";
+import { BookingType } from "./BookingList";
 import "./Resource.scss";
+
+export interface ResourceType {
+  id: string;
+  name: string;
+  bookingDurationStep: number;
+  maximumBookingDuration: number;
+  minimumBookingDuration: number;
+}
 
 interface Props {
   resource: ResourceType;
   bookings: BookingType[];
-  book: (data: BookingData) => void;
+  setBookings: (bookings: BookingType[]) => void;
 }
 
 interface User {
@@ -18,19 +24,32 @@ interface User {
   name: string;
 }
 
-const Resource = ({ resource, bookings, book }: Props) => {
-  const { auth } = useAuth();
+export interface BookingPayload {
+  name: string,
+  duration: number,
+}
+
+const Resource = ({ resource, bookings, setBookings }: Props) => {
+  const { getApi, postApi } = useApi();
   const isBookedNow = getMaxEnd(new Date(), bookings, resource) === undefined;
   const currentBooking = getCurrentBooking(new Date(), bookings);
-  const [bookingUser, setBookingUser] = useState<User | null>(null);
+  const [bookingUser, setBookingUser] = useState<User>();
+  const mockedNewBooking: BookingPayload = {name: "NEW BOOKING", duration: 10};
+
+  const bookResource = async () => {
+    await postApi<BookingType>("bookings", mockedNewBooking);
+    const updatedBookingList = await getApi<BookingType[]>("bookings"); // refetch updated booking list
+    setBookings(formatBookings(updatedBookingList));
+  }
 
   useEffect(() => {
-    if (auth && currentBooking) {
-      getUserById(auth.token, currentBooking.userId)
-        .then(result => setBookingUser(result.data))
-        .catch(error => console.log(error))
+    if (currentBooking) {
+      getApi<User>(`users/${currentBooking.userId}`)
+        .then((result) => setBookingUser(result))
+    } else {
+      setBookingUser(undefined);
     }
-  }, [auth, currentBooking])
+  }, [getApi, currentBooking])
 
   return (
     <header>
@@ -41,7 +60,7 @@ const Resource = ({ resource, bookings, book }: Props) => {
             <h2>Booked</h2>
             {!!currentBooking ? (
               <>
-                <p>By {bookingUser && bookingUser.name}</p>
+                <p>By {bookingUser?.name}</p>
                 <p>From <time>{format(currentBooking.start, "p")}</time> to <time>{format(currentBooking.end, "p")}</time></p>
               </>
             ) : (
@@ -51,7 +70,7 @@ const Resource = ({ resource, bookings, book }: Props) => {
         ) : (
           <>
             <h2>Available</h2>
-            <button onClick={() => book({ name: "NEW BOOKING", duration: 10})}>Book now</button>
+            <button onClick={bookResource}>Book now</button>
             <p>
               Booking range: from {resource.minimumBookingDuration} min to {resource.maximumBookingDuration} min.
             </p>

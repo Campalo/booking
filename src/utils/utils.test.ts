@@ -1,6 +1,6 @@
 import { isEqual } from "date-fns";
-import { BookingType } from "./useBookings";
-import { ResourceType } from "./useResource";
+import { BookingType } from "../components/BookingList";
+import { ResourceType } from "../components/Resource";
 import { getCurrentBooking, getMaxEnd, orderBookings } from "./utils";
 
 const getDate = (h: number, m: number) => new Date(2022, 29, 1, h, m, 0);

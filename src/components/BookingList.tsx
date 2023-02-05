@@ -1,4 +1,10 @@
-import { BookingType } from "../utils/useBookings";
+export interface BookingType {
+  id: string;
+  start: Date;
+  end: Date;
+  name: string;
+  userId: string;
+}
 
 interface Props {
   bookings: BookingType[];

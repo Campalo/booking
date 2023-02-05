@@ -1,6 +1,6 @@
 import { add, differenceInMinutes } from "date-fns";
-import { BookingType } from "./useBookings";
-import { ResourceType } from "./useResource";
+import { BookingType } from "../components/BookingList";
+import { ResourceType } from "../components/Resource";
 
 // Sort bookings from start to end of day
 export const orderBookings = (bookings: BookingType[]) => {
@@ -46,3 +46,13 @@ export const getMaxEnd = (start: Date, bookings: BookingType[], resource: Resour
   const delta = differenceInMinutes(nextBooking.start, start);
   return Math.min(resource.maximumBookingDuration, delta);
 };
+
+export const formatBookings = (bookings: any[]): BookingType[] => {
+  return bookings.map((booking) => {
+   return {
+      ...booking,
+      start: new Date(booking.start),
+      end: new Date(booking.end),
+    }
+  })
+}

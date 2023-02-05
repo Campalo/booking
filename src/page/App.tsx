@@ -1,20 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.scss";
-import Resource from "../components/Resource";
-import BookingList from "../components/BookingList";
-import { useResource } from "../utils/useResource";
-import { useBookings } from "../utils/useBookings";
+import Resource, { ResourceType } from "../components/Resource";
+import BookingList, { BookingType } from "../components/BookingList";
 import { useAuth } from "../utils/auth";
+import { useApi } from "../utils/useApi";
+import { formatBookings } from "../utils/utils";
 
 const Page = () => {
-  const { resource } = useResource();
-  const { bookings, book } = useBookings();
+  const { getApi } = useApi();
+  const [resource, setResource] = useState<ResourceType>();
+  const [bookings, setBookings] = useState<BookingType[]>();
+
+  useEffect(() => {
+    getApi<ResourceType>("resource").then((result) => setResource(result));
+    getApi<BookingType[]>("bookings").then((result) => setBookings(formatBookings(result)));
+  }, [])
 
   if (!resource || !bookings) return <p>Loading...</p>;
 
   return (
     <>
-      <Resource resource={resource} bookings={bookings} book={book} />
+      <Resource resource={resource} bookings={bookings} setBookings={setBookings}/>
       <BookingList bookings={bookings} />
     </>
   );
