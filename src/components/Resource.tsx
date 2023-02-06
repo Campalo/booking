@@ -1,7 +1,7 @@
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useApi } from "../utils/useApi";
-import { formatBookings, getCurrentBooking, getMaxEnd } from "../utils/utils";
+import { getCurrentBooking, getMaxEnd } from "../utils/utils";
 import { BookingType } from "./BookingList";
 import "./Resource.scss";
 
@@ -16,7 +16,7 @@ export interface ResourceType {
 interface Props {
   resource: ResourceType;
   bookings: BookingType[];
-  setBookings: (bookings: BookingType[]) => void;
+  addBooking: (bookings: BookingPayload) => void;
 }
 
 interface User {
@@ -29,27 +29,22 @@ export interface BookingPayload {
   duration: number,
 }
 
-const Resource = ({ resource, bookings, setBookings }: Props) => {
-  const { getApi, postApi } = useApi();
+const Resource = ({ resource, bookings, addBooking }: Props) => {
+  const { data: user, getApi: getUser, setData: setUser } = useApi<User>('users');
+
   const isBookedNow = getMaxEnd(new Date(), bookings, resource) === undefined;
   const currentBooking = getCurrentBooking(new Date(), bookings);
-  const [bookingUser, setBookingUser] = useState<User>();
   const mockedNewBooking: BookingPayload = {name: "NEW BOOKING", duration: 10};
 
-  const bookResource = async () => {
-    await postApi<BookingType>("bookings", mockedNewBooking);
-    const updatedBookingList = await getApi<BookingType[]>("bookings"); // refetch updated booking list
-    setBookings(formatBookings(updatedBookingList));
-  }
+  const bookResource = () => addBooking(mockedNewBooking);
 
   useEffect(() => {
     if (currentBooking) {
-      getApi<User>(`users/${currentBooking.userId}`)
-        .then((result) => setBookingUser(result))
+      getUser(currentBooking.userId);
     } else {
-      setBookingUser(undefined);
+      setUser(undefined);
     }
-  }, [getApi, currentBooking])
+  }, [currentBooking])
 
   return (
     <header>
@@ -60,7 +55,7 @@ const Resource = ({ resource, bookings, setBookings }: Props) => {
             <h2>Booked</h2>
             {!!currentBooking ? (
               <>
-                <p>By {bookingUser?.name}</p>
+                <p>By {user?.name}</p>
                 <p>From <time>{format(currentBooking.start, "p")}</time> to <time>{format(currentBooking.end, "p")}</time></p>
               </>
             ) : (
