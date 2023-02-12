@@ -30,7 +30,7 @@ function App() {
   const isValidToken = auth && new Date(auth.expirationDate) > new Date();
 
   if (!isValidToken) {
-    return <button onClick={login}>Login</button>;
+    return <button onClick={login} className="primary">Login</button>;
   }
 
   return <Page />;

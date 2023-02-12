@@ -59,8 +59,8 @@ export const FormModal = ({addBooking, intervals}: FormProps) => {
         </p>
 
         <footer>
-          <button type="submit">Save</button>
-          <button type="button" onClick={handleCancel} className="secondary">Cancel</button>
+          <button type="submit" className="primary">Save</button>
+          <button type="button" onClick={handleCancel}>Cancel</button>
         </footer>
       </form>
     </dialog>

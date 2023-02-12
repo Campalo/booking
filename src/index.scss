@@ -1,6 +1,56 @@
+:root {
+  --primary: #FDC921;
+  --on-primary: black;
+  --secondary: #99D6EA;
+  --on-secondary: black;
+  --surface: #c6c6c6;
+  --on-surface: black;
+  --background: whitesmoke;
+  --text: black;
+  --text-secondary: #757575;
+  --border: #ffc300;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  accent-color: var(--primary);
+  color-scheme: light;
+}
+
+button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: var(--surface);
+  color: var(--on-surface);
+  cursor: pointer;
+  position: relative;
+  outline-offset: 0px;
+  transition: outline-offset 0.2s ease-in-out;
+
+  &:hover::after {
+    content: "";
+    background-color: rgba(0,0,0,0.12);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  &:focus-visible {
+    outline-color: var(--primary);
+    outline-offset: 3px;
+    outline-width: 2px;
+  }
+
+  &.primary {
+    background-color: var(--primary);
+    color: var(--on-primary);
+  }
 }

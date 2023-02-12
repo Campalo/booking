@@ -59,7 +59,7 @@ const Resource = ({ resource, bookings, addBooking }: Props) => {
         ) : (
           <>
             <h2>Available</h2>
-            <button onClick={showModal}>Book now</button>
+            <button onClick={showModal} className="primary">Book now</button>
             <FormModal addBooking={addBooking} intervals={intervals}/>
             <p>
               This room can be booked from {resource.minimumBookingDuration} to {resource.maximumBookingDuration} min.

@@ -1,11 +1,12 @@
 dialog {
-  width: 300px;
-  background-color: #FFF;
-  border: 1px solid #FDC921;
-  border-radius: 8px;
+  max-width: 300px;
+  box-sizing: border-box;
+  background-color: var(--background);
+  border: 2px solid var(--border);
+  border-radius: 16px;
 
   &::backdrop {
-    background: rgba(0, 0, 0, 0.8);
+    background: #00465dc9;
   }
 
   h2 {
@@ -25,18 +26,18 @@ form {
   }
 
   select option:checked {
-    background-color: #FDC921;
+    background-color: var(--primary);
   }
 
   p {
-    color: #757575;
+    color: var(--text-secondary);
     margin: 0;
   }
-}
 
-footer {
-  padding-top: 24px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+  footer {
+    padding-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
 }
