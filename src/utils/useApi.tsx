@@ -31,7 +31,7 @@ export function useApi<T>(
     }
     return post<T>(auth.token, basePath, payload)
       .catch((error) => {
-        if (error === "Unauthorized") reset();
+        if (error.message === "Unauthorized") reset();
         throw error;
       })
   }

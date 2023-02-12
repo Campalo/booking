@@ -38,6 +38,8 @@ export const post = async <T>(token: string, path: string, payload: Record<strin
     }
   )
 
+  if (response.status === 401) throw new Error("Unauthorized")
+
   const result = await response.json();
 
   if(result.success === true) {
