@@ -40,12 +40,27 @@ export const getMaxEnd = (start: Date, bookings: BookingType[], resource: Resour
   if (!nextBooking) return resource.maximumBookingDuration; // next time span is free, no booking found
 
   const minEnd = add(start, {minutes: resource.minimumBookingDuration});
-  const isNextBookingAllowed = minEnd < nextBooking.start;
+  const isNextBookingAllowed = minEnd <= nextBooking.start;
   if (!isNextBookingAllowed) return;
 
   const delta = differenceInMinutes(nextBooking.start, start);
   return Math.min(resource.maximumBookingDuration, delta);
 };
+
+export const getIntervals = (start: Date, resource: ResourceType, bookings: BookingType[]) => {
+  const maxEnd = getMaxEnd(start, bookings, resource);
+
+  if (!maxEnd) return;
+
+  const {minimumBookingDuration, bookingDurationStep} = resource;
+  const intervals: number[] = [];
+
+  for (let i = minimumBookingDuration; i <= maxEnd; i += bookingDurationStep) {
+    intervals.push(i);
+  }
+
+  return intervals;
+}
 
 export const formatBookings = (bookings: any[]): BookingType[] => {
   return bookings.map((booking) => {

@@ -1,5 +1,5 @@
 import { BookingType } from "../components/BookingList";
-import { BookingPayload } from "../components/Resource";
+import { BookingPayload } from "../components/FormModal";
 import { useApi } from "./useApi";
 import { formatBookings } from "./utils";
 

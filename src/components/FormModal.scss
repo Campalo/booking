@@ -1,0 +1,42 @@
+dialog {
+  width: 300px;
+  background-color: #FFF;
+  border: 1px solid #FDC921;
+  border-radius: 8px;
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  h2 {
+    margin-top: 0;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  select option:checked {
+    background-color: #FDC921;
+  }
+
+  p {
+    color: #757575;
+    margin: 0;
+  }
+}
+
+footer {
+  padding-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

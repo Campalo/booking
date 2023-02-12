@@ -1,8 +1,9 @@
 import { format } from "date-fns";
 import { useEffect } from "react";
 import { useApi } from "../utils/useApi";
-import { getCurrentBooking, getMaxEnd } from "../utils/utils";
+import { getCurrentBooking, getIntervals } from "../utils/utils";
 import { BookingType } from "./BookingList";
+import { BookingPayload, FormModal } from "./FormModal";
 import "./Resource.scss";
 
 export interface ResourceType {
@@ -24,19 +25,12 @@ interface User {
   name: string;
 }
 
-export interface BookingPayload {
-  name: string,
-  duration: number,
-}
-
 const Resource = ({ resource, bookings, addBooking }: Props) => {
   const { data: user, getApi: getUser, setData: setUser } = useApi<User>('users');
-
-  const isBookedNow = getMaxEnd(new Date(), bookings, resource) === undefined;
   const currentBooking = getCurrentBooking(new Date(), bookings);
-  const mockedNewBooking: BookingPayload = {name: "NEW BOOKING", duration: 10};
-
-  const bookResource = () => addBooking(mockedNewBooking);
+  const intervals = getIntervals(new Date(),resource, bookings);
+  const isBookedNow = intervals === undefined;
+  const showModal = () => (document.getElementById("dialog") as any).showModal();
 
   useEffect(() => {
     if (currentBooking) {
@@ -65,9 +59,10 @@ const Resource = ({ resource, bookings, addBooking }: Props) => {
         ) : (
           <>
             <h2>Available</h2>
-            <button onClick={bookResource}>Book now</button>
+            <button onClick={showModal}>Book now</button>
+            <FormModal addBooking={addBooking} intervals={intervals}/>
             <p>
-              Booking range: from {resource.minimumBookingDuration} min to {resource.maximumBookingDuration} min.
+              This room can be booked from {resource.minimumBookingDuration} to {resource.maximumBookingDuration} min.
             </p>
           </>
         )}

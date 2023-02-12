@@ -1,7 +1,7 @@
 import { isEqual } from "date-fns";
 import { BookingType } from "../components/BookingList";
 import { ResourceType } from "../components/Resource";
-import { getCurrentBooking, getMaxEnd, orderBookings } from "./utils";
+import { getCurrentBooking, getIntervals, getMaxEnd, orderBookings } from "./utils";
 
 const getDate = (h: number, m: number) => new Date(2022, 29, 1, h, m, 0);
 
@@ -11,7 +11,7 @@ const resource: ResourceType = {
   minimumBookingDuration: 10,
   id: "123",
   bookingDurationStep: 5,
-}
+};
 
 const bookings : BookingType[]=  [
   {
@@ -114,5 +114,36 @@ describe("orderBookings", () => {
       },
     ];
     expect(orderBookings(bookings)).toStrictEqual(expectedOrderedBooking);
+  })
+})
+
+describe("getIntervals", () => {
+  describe("When there is no MaxEnd", () => {
+    it("should return undefined", () => {
+      expect(getIntervals(getDate(19, 51), resource, bookings)).toBeUndefined();
+    })
+  })
+
+  describe("When there is a valid MaxEnd", () => {
+    describe("When the time is 10 min before the next booking", () => {
+      it("should return 10", () => {
+        expect(getIntervals(getDate(19, 50), resource, bookings)).toEqual([10]);
+        })
+    })
+    describe("When the time is 11 min before the next booking", () => {
+      it("should return 10", () => {
+        expect(getIntervals(getDate(19, 49), resource, bookings)).toEqual([10]);
+        })
+    })
+    describe("When the time is 22 min before the next booking", () => {
+      it("should return 10, 15, 20", () => {
+        expect(getIntervals(getDate(19, 38), resource, bookings)).toEqual([10, 15, 20]);
+        })
+    })
+    describe("When the time is 40 min before the next booking", () => {
+      it("should return 10, 15, 20, 25, 30, 35, 40", () => {
+        expect(getIntervals(getDate(19, 20), resource, bookings)).toEqual([10, 15, 20, 25, 30, 35, 40]);
+        })
+    })
   })
 })
