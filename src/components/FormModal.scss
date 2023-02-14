@@ -1,5 +1,5 @@
 dialog {
-  max-width: 300px;
+  min-width: 300px;
   box-sizing: border-box;
   background-color: var(--background);
   border: 2px solid var(--border);
@@ -57,13 +57,13 @@ output {
 }
 
 @media (min-width: 600px) {
-  output {
+  dialog, output {
     max-width: 500px;
   }
 }
 
 @media (max-width: 599px) {
-  output {
+  dialog, output {
     max-width: 90vw;
   }
 }
