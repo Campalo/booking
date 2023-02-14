@@ -41,3 +41,55 @@ form {
     gap: 8px;
   }
 }
+
+output {
+  position: fixed;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin: auto;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: var(--error);
+  color: var(--on-error);
+  animation: fadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); //Ease-out-back
+}
+
+@media (min-width: 600px) {
+  output {
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 599px) {
+  output {
+    max-width: 90vw;
+  }
+}
+
+@media (prefers-reduced-motion) {
+  output {
+    animation: fadeInReduced 0.3s;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+   }
+}
+
+@keyframes fadeInReduced {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+   }
+}

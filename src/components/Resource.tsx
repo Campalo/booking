@@ -17,7 +17,7 @@ export interface ResourceType {
 interface Props {
   resource: ResourceType;
   bookings: BookingType[];
-  addBooking: (bookings: BookingPayload) => void;
+  addBooking: (bookings: BookingPayload) => Promise<void>;
 }
 
 interface User {
