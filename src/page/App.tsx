@@ -15,12 +15,16 @@ const Page = () => {
     getBookings();
   }, [])
 
-  if (!resource || !bookings) return <p>Loading...</p>;
+  if (!resource || !bookings) return (
+    <main>
+      <p>Loading...</p>
+    </main>
+  );
 
   return (
     <main>
       <Resource resource={resource} bookings={bookings} addBooking={addBooking}/>
-      <BookingList bookings={bookings} />
+      <BookingList bookings={bookings}/>
     </main>
   );
 };
@@ -39,7 +43,7 @@ function App() {
     )
   }
 
-  return <Page />;
+  return <Page />
 }
 
 export default App;

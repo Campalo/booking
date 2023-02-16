@@ -14,14 +14,14 @@ export const get = async <T>(token: string, path: string): Promise<T> => {
       }
     );
 
-    if (response.status === 401) throw new Error("Unauthorized")
+    if (response.status === 401) throw new Error("Unauthorized");
 
     const result = await response.json();
 
     if(result.success === true) {
-      return result.data
+      return result.data;
     } else {
-      throw new Error(result.message)
+      throw new Error(result.message);
     }
 }
 
@@ -38,12 +38,12 @@ export const post = async <T>(token: string, path: string, payload: Record<strin
     }
   )
 
-  if (response.status === 401) throw new Error("Unauthorized")
+  if (response.status === 401) throw new Error("Unauthorized");
 
   const result = await response.json();
 
   if(result.success === true) {
-    return result.data
+    return result.data;
   } else {
     throw new Error(result.message);
   }
