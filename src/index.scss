@@ -35,6 +35,7 @@ button {
   position: relative;
   outline-offset: 0px;
   transition: outline-offset 0.2s ease-in-out;
+  font-size: 1em;
 
   &:hover::after {
     content: "";

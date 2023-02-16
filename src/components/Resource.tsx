@@ -46,24 +46,20 @@ const Resource = ({ resource, bookings, addBooking }: Props) => {
       <div>
         {isBookedNow ? (
           <>
-            <h2>Booked</h2>
+            <h2>{"Booked".toUpperCase()}</h2>
             {!!currentBooking ? (
-              <>
-                <p>By {user?.name}</p>
-                <p>From <time>{format(currentBooking.start, "p")}</time> to <time>{format(currentBooking.end, "p")}</time></p>
-              </>
+              <div id="booked">
+                <p>By {user?.name} from <time>{format(currentBooking.start, "p")}</time> to <time>{format(currentBooking.end, "p")}</time></p>
+              </div>
             ) : (
               <p>The next booking starts in less than {resource.minimumBookingDuration}min</p>
             )}
           </>
         ) : (
           <>
-            <h2>Available</h2>
+            <h2>{"Available".toUpperCase()}</h2>
             <button onClick={showModal} className="primary">Book now</button>
             <FormModal addBooking={addBooking} intervals={intervals}/>
-            <p>
-              This room can be booked from {resource.minimumBookingDuration} to {resource.maximumBookingDuration} min.
-            </p>
           </>
         )}
       </div>

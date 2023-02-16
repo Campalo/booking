@@ -26,8 +26,10 @@ const BookingList = ({bookings}: Props) => {
     if (booking.start > previousEnd) {
       rows.push((
         <tr key={booking.start.getTime()} className="available">
-          <td><time>{format(previousEnd, "p")}</time> - <time>{format(booking.start, "p")}</time></td>
-          <td>Available</td>
+          <td>
+            <time>{format(previousEnd, "p")}</time> - <time>{format(booking.start, "p")}</time>
+          </td>
+          <td></td>
         </tr>
       ))
     }
@@ -49,7 +51,7 @@ const BookingList = ({bookings}: Props) => {
     rows.push((
       <tr key={endOfTheDay.getTime()} className="available">
         <td><time>{format(previousEnd, "p")}</time> - <time>{format(endOfTheDay, "p")}</time></td>
-        <td>Available</td>
+        <td></td>
       </tr>
     ))
   }

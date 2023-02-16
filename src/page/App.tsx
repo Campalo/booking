@@ -18,10 +18,10 @@ const Page = () => {
   if (!resource || !bookings) return <p>Loading...</p>;
 
   return (
-    <>
+    <main>
       <Resource resource={resource} bookings={bookings} addBooking={addBooking}/>
       <BookingList bookings={bookings} />
-    </>
+    </main>
   );
 };
 
@@ -30,7 +30,13 @@ function App() {
   const isValidToken = auth && new Date(auth.expirationDate) > new Date();
 
   if (!isValidToken) {
-    return <button onClick={login} className="primary">Login</button>;
+    return (
+      <main id="login">
+        <h1>Welcome!</h1>
+        <h2>Please login to see the room availability</h2>
+        <button onClick={login} className="primary">Login</button>
+      </main>
+    )
   }
 
   return <Page />;
